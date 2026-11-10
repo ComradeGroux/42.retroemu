@@ -9,4 +9,3 @@ members = ["gb-core", "gb-graphics"]
 [dependencies]
 gb-core = { path = "gb-core" }
 gb-graphics = { path = "gb-graphics" }
-sdl2 = "0.38.0"
