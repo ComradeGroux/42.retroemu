@@ -1,0 +1,12 @@
+[package]
+name = "retroemu"
+version = "0.1.0"
+edition = "2021"
+
+[workspace]
+members = ["gb-core", "gb-graphics"]
+
+[dependencies]
+gb-core = { path = "gb-core" }
+gb-graphics = { path = "gb-graphics" }
+sdl2 = "0.38.0"
