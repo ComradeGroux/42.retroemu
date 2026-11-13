@@ -1,5 +1,6 @@
 pub type Byte = u8;
 pub type Word = u16;
+pub type Address = u16;
 
 pub trait ByteOperation {
 	fn	get_high(self) -> Byte;
@@ -8,7 +9,7 @@ pub trait ByteOperation {
 
 impl ByteOperation for Byte {
 	fn	get_high(self) -> Byte {
-		self & 0xF0
+		self >> 4
 	}
 
 	fn	get_low(self) -> Byte {
@@ -21,6 +22,8 @@ pub trait WordOperation {
 	fn	get_low(self) -> Byte;
 	fn	set_high(&self, byte: Byte) -> Word;
 	fn	set_low(&self, byte: Byte) -> Word;
+
+	fn	from_bytes(high: Byte, low: Byte) -> Word;
 }
 
 impl WordOperation for Word {
@@ -46,5 +49,10 @@ impl WordOperation for Word {
 		let mut word = self & 0xFF00;
 		word |= byte as Word;
 		word
+	}
+
+	fn	from_bytes(high: Byte, low: Byte) -> Word
+	{
+		(low as Word).set_high(high)
 	}
 }

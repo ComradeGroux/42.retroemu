@@ -37,7 +37,7 @@ pub enum	Register16 {
 	AF,
 }
 
-#[derive(Debug, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum	Flag {
 	Zero,
 	Substraction,
@@ -45,10 +45,9 @@ pub enum	Flag {
 	Carry
 }
 
-
 #[derive(Debug, PartialEq, Eq, Hash)]
 #[allow(non_camel_case_types)]
-enum	Instructions {
+pub enum	Instructions {
 	// Load
 	LD_R_R,
 	LD_R_N,
@@ -173,7 +172,7 @@ impl Cpu
 {
 	pub fn	new() -> Self
 	{
-		Cpu {
+		Self {
 			a: 0x00,
 			b: 0x00,
 			c: 0x00,
@@ -182,8 +181,25 @@ impl Cpu
 			h: 0x00,
 			l: 0x00,
 			f: 0x00,
-			sp: 0x00,
-			pc: 0x00,
+			sp: 0x0000,
+			pc: 0x0000,
+			halt: false,
+		}
+	}
+
+	pub fn	new_without_boot() -> Self
+	{
+		Self {
+			a: 0x01,
+			f: 0xB0,
+			b: 0x00,
+			c: 0x13,
+			d: 0x00,
+			e: 0xD8,
+			h: 0x01,
+			l: 0x4D,
+			sp: 0xFFFe,
+			pc: 0x0100,
 			halt: false,
 		}
 	}
@@ -223,10 +239,10 @@ impl Cpu
 		match reg
 		{
 			Register16::SP => self.sp,
-			Register16::BC => bytes2word(self.b, self.c),
-			Register16::DE => bytes2word(self.d, self.e),
-			Register16::AF => bytes2word(self.a, self.f),
-			Register16::HL => bytes2word(self.h, self.l),
+			Register16::BC => Word::from_bytes(self.b, self.c),
+			Register16::DE => Word::from_bytes(self.d, self.e),
+			Register16::AF => Word::from_bytes(self.a, self.f),
+			Register16::HL => Word::from_bytes(self.h, self.l),
 		}
 	}
 
@@ -245,7 +261,7 @@ impl Cpu
 			},
 			Register16::AF => {
 				self.a = word.get_high();
-				self.f = word.get_low();
+				self.f = word.get_low() & 0xF0;
 			},
 			Register16::HL => {
 				self.h = word.get_high();
@@ -254,11 +270,21 @@ impl Cpu
 		}
 	}
 
+	pub fn	display_registers(&self, _flag: bool)
+	{
+		log::info!("REGISTERS");
+		log::info!("REG  A\t\t{}", self.a);
+		log::info!("REG  B\t\t{}", self.b);
+		log::info!("REG  C\t\t{}", self.c);
+		log::info!("REG  D\t\t{}", self.d);
+		log::info!("REG  E\t\t{}", self.e);
+		log::info!("REG  H\t\t{}", self.h);
+		log::info!("REG  L\t\t{}", self.l);
+		log::info!("STACK POINTER\t\t{}", self.sp);
+		log::info!("PROGRAM COUNTER\t{}", self.pc);
+		log::info!("REG  FLAG\t\t{}", self.f);
+		log::info!("REG  HALT\t\t{}", self.halt);
+	}
 
 
-}
-
-fn	bytes2word(high: Byte, low: Byte) -> Word
-{
-	(low as Word).set_high(high)
 }
