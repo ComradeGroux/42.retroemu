@@ -4,14 +4,14 @@ const HEADER_START: usize = 0x100;
 const HEADER_END: usize = 0x150;
 
 pub enum	CartType {
-	ROMONLY,
-	MBC1,
-	MBC1_RAM,
-	MBC1_RAM_BATTERY,
-	MBC2,
-	MBC5,
-	MBC5_RAM,
-	MBC5_RAM_BATTERY
+	Romonly,
+	Mbc1,
+	Mbc1Ram,
+	Mbc1RamBattery,
+	Mbc2,
+	Mbc5,
+	Mbc5Ram,
+	Mbc5RamBattery
 }
 impl		TryFrom<u8> for CartType {
 	type Error = HeaderError;
@@ -19,14 +19,14 @@ impl		TryFrom<u8> for CartType {
 	fn	try_from(value: u8) -> Result<Self, Self::Error>
 	{
 		match value {
-			0x00 => Ok(CartType::ROMONLY),
-			0x01 => Ok(CartType::MBC1),
-			0x02 => Ok(CartType::MBC1_RAM),
-			0x03 => Ok(CartType::MBC1_RAM_BATTERY),
-			0x05 => Ok(CartType::MBC2),
-			0x19 => Ok(CartType::MBC5),
-			0x1A => Ok(CartType::MBC5_RAM),
-			0x1B => Ok(CartType::MBC5_RAM_BATTERY),
+			0x00 => Ok(CartType::Romonly),
+			0x01 => Ok(CartType::Mbc1),
+			0x02 => Ok(CartType::Mbc1Ram),
+			0x03 => Ok(CartType::Mbc1RamBattery),
+			0x05 => Ok(CartType::Mbc2),
+			0x19 => Ok(CartType::Mbc5),
+			0x1A => Ok(CartType::Mbc5Ram),
+			0x1B => Ok(CartType::Mbc5RamBattery),
 			other => Err(HeaderError::UnknownCartType(other))
 		}	
 	}
@@ -133,7 +133,7 @@ impl		Cartridge {
 				title: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 				new_lic_code: 0,
 				sgb_flag: 0,
-				cartridge_type: CartType::ROMONLY,
+				cartridge_type: CartType::Romonly,
 				rom_size: 0,
 				ram_size: 0,
 				dest_code: 0,
